@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "proyecto-agenda-444d7": {
+      "hosting": {
+        "Poyecto-Agenda": [
+          "proyecto-agenda-444d7"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "proyecto-agenda-444d7"
+  }
+}

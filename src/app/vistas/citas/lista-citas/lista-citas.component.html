@@ -1,0 +1,33 @@
+<table class="table">
+
+    <thead>
+        <tr>
+            <th scope="col">Nombre Entrevistado</th>
+            <th scope="col">Dia Cita</th>
+            <th scope="col">Hora Inicio</th>
+            <th scope="col">Hora Fin</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr *ngFor="let cita of citas"><!--Aqui va el ngFor-->
+
+            <td>{{cita.nombreEntrevistador}}</td>
+            <td>{{cita.dia}}</td>
+            <td>{{cita.horaInicio}}</td>
+            <td>{{cita.horaFin}}</td>
+            <td>
+                <span>
+                <i class="bi bi-pencil-square bg bg-warning" routerLink='/alquiler/{{cita.id}}'></i>
+                <i (click)="confirmarEliminar(cita)" class="bi bi-trash bg bg-danger"></i>
+              </span>
+              </td>
+        </tr>
+    </tbody>
+
+
+
+
+</table>
