@@ -14,6 +14,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DetalleCitasComponent } from './vistas/citas/detalle-citas/detalle-citas.component';
 import { ListaCitasComponent } from './vistas/citas/lista-citas/lista-citas.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DetalleClientesComponent } from './vistas/clientes/detalle-clientes/detalle-clientes.component';
+import { ListaClientesComponent } from './vistas/clientes/lista-clientes/lista-clientes.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ClientesComponent,
     PaginaInicioComponent,
     DetalleCitasComponent,
-    ListaCitasComponent
+    ListaCitasComponent,
+    DetalleClientesComponent,
+    ListaClientesComponent
   ],
   imports: [
     BrowserModule,

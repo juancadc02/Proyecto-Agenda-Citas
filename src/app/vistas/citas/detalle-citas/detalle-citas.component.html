@@ -1,35 +1,39 @@
 <div class="container mt-4">
-    <h2>{{textoTitulo}}</h2>
-  
-    <div class="alert alert-success my-3" role="alert" *ngIf="mensaje">
-      {{mensaje}}
-    </div>
-  
-    <form [formGroup]="citaForm" (ngSubmit)="agregarCita()">
-     
-        <div class="mb-3">
-        <label for="nombreEntrevistador" class="form-label">Nombre del Entrevistador:</label>
-        <input [(ngModel)]="cita.nombreEntrevistador" type="text" class="form-control" id="nombreEntrevistador"
-          formControlName="nombreEntrevistador" required>
-      </div>
-  
-      <div class="mb-3">
-        <label for="dia" class="form-label">Dia Cita:</label>
-        <input [(ngModel)]="cita.dia" type="date" class="form-control" id="dia"
-          formControlName="dia" required>
-      </div>
-  
-      <div class="mb-3">
-        <label for="horaInicio" class="form-label">Hora Inicio:</label>
-        <input [(ngModel)]="cita.horaInicio" type="time" class="form-control" id="horaInicio"
-          formControlName="horaInicio" required>
-      </div>
-      
-      <div class="mb-3">
-        <label for="horaFin" class="form-label">Hora Fin:</label>
-        <input [(ngModel)]="cita.horaFin" type="time" class="form-control" id="horaFin"
-          formControlName="horaFin" required>
-      </div>
-      <button type="submit" class="btn btn-primary" [disabled]="!this.citaForm.valid">{{buttonText}}</button>
-    </form>
+  <h2>{{textoTitulo}}</h2>
+
+  <div class="alert alert-success my-3" role="alert" *ngIf="mensaje">
+    {{mensaje}}
   </div>
+
+  <form [formGroup]="citaForm" (ngSubmit)="enviarDatos()">
+
+    <!--Pedimos el juego-->
+    <div class="mb-3">
+      <label for="nombreEntrevistador" class="form-label">Nombre Entrevistador:</label>
+      <select class="form-select" name="nombreEntrevistador" formControlName="nombreEntrevistador"
+        [(ngModel)]="cita.nombreEntrevistador">
+        <option value="" disabled selected>Seleccione un entrevistador.</option>
+        <option *ngFor="let entrevistadores of entrevistadoresNombre" [value]="entrevistadores.nombreEntrevistador">
+          {{entrevistadores.nombreEntrevistador}}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="dia" class="form-label">Dia Cita:</label>
+      <input [(ngModel)]="cita.dia" type="date" class="form-control" id="dia" formControlName="dia" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="horaInicio" class="form-label">Hora Inicio:</label>
+      <input [(ngModel)]="cita.horaInicio" type="time" class="form-control" id="horaInicio" formControlName="horaInicio"
+        required>
+    </div>
+
+    <div class="mb-3">
+      <label for="horaFin" class="form-label">Hora Fin:</label>
+      <input [(ngModel)]="cita.horaFin" type="time" class="form-control" id="horaFin" formControlName="horaFin"
+        required>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!this.citaForm.valid">{{buttonText}}</button>
+  </form>
+</div>

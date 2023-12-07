@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Citas } from 'src/app/Modelo/citas';
+import { Entrevistadores } from 'src/app/Modelo/entrevistadores';
 import { CitasService } from 'src/app/Servicio/citas.service';
+import { EntrevistadoresService } from 'src/app/Servicio/entrevistadores.service';
+import { FirebaseService } from 'src/app/Servicio/firebase.service';
 import { MensajeService } from 'src/app/Servicio/mensaje.service';
 
 @Component({
@@ -14,38 +17,61 @@ export class DetalleCitasComponent {
 
 
   //Campos necesarios.
-  citaForm:FormGroup;
-  textoTitulo:string="Añadir Cita";
-  buttonText='Guardar Cita'
-  mensaje?:string;
-  cita : Citas={id:'',nombreEntrevistador:'',dia:new Date(),horaInicio:'',horaFin:'',presentado:false};
+  citaForm: FormGroup;
+  textoTitulo: string = "Añadir Cita";
+  buttonText = 'Guardar Cita'
+  mensaje?: string;
+  id: string = "";
+  entrevistadores: Entrevistadores = { id: '', nombreEntrevistador: '' };
+  entrevistadoresNombre: Entrevistadores[] = [];
+  cita: Citas = { id: '', nombreEntrevistador: '', dia: new Date(), horaInicio: '', horaFin: '', presentado: false };
 
 
   constructor(private router: Router,
-    private servicioCitas : CitasService,
-    private servicioMensaje :MensajeService,
-    private forms: FormBuilder){
+    private servicioCitas: CitasService,
+    private servicioMensaje: MensajeService,
+    private forms: FormBuilder,
+    private servicioEntrevistadores: EntrevistadoresService,
+    private servicioFirebase: FirebaseService,
+    private route: ActivatedRoute) {
 
 
-      this.citaForm = this.forms.group({
-        nombreEntrevistador: ['', Validators.required],
-        dia: [new Date().toISOString().split('T')[0], Validators.required],
-        horaInicio: ['', Validators.required],
-        horaFin: ['', Validators.required],
-        presentado: [null],
-      });
+    this.citaForm = this.forms.group({
+      nombreEntrevistador: ['', Validators.required],
+      dia: [new Date().toISOString().split('T')[0], Validators.required],
+      horaInicio: ['', Validators.required],
+      horaFin: ['', Validators.required],
+      presentado: [null],
+    });
 
 
+  }
+
+  ngOnInit() {
+
+    if (this.route.snapshot.paramMap.get("id")) {
+      this.textoTitulo='Modificar cita';
+      this.id = this.route.snapshot.paramMap.get("id")!;
+      this.buttonText = "Modificar cita";
+      this.servicioFirebase.getFireBasePorId('citas', this.id).subscribe(
+        (res: any) => this.cita = res);
     }
- 
-    ngOnInit(){
-      // Para mostrar el mensaje una vez añadido el alquiler
+    this.servicioEntrevistadores.listarEntrevistadores().subscribe(res => this.entrevistadoresNombre = res);
+    // Para mostrar el mensaje una vez añadido el alquiler
     this.servicioMensaje.mensaje$.subscribe((mensaje) => {
       if (mensaje) {
         this.mensaje = mensaje;
       }
     });
+  }
+
+  enviarDatos() {
+    if (this.id) {
+      this.modificarCita()
+    } else {
+      this.agregarCita();
     }
+  }
   agregarCita() {
     console.log(this.citaForm.valid);
     if (this.citaForm.valid) {
@@ -66,4 +92,19 @@ export class DetalleCitasComponent {
         });
     }
   }
-}
+
+  modificarCita() {
+   
+
+    this.servicioCitas.modificarCitas(this.cita, 'citas', this.id!).
+    then(() => console.log("Se guardo correctamente")).
+    catch(() => console.log("No se guardo"));
+    this.servicioMensaje.enviarMensaje('Cita modificada correctamente. Redirigiendo a listado de citas ...');
+    //Redirigimos al listado de juegos 2 segundos despues de añadirlo.
+    setTimeout(() => {
+     // Redirigir a otro sitio
+     this.router.navigate(['/citas']);
+   }, 2000)
+  }
+  }
+

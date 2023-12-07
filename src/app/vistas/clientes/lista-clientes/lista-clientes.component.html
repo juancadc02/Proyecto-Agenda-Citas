@@ -1,0 +1,35 @@
+<table class="table">
+
+    <thead>
+        <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Telefono</th>
+            <th scope="col">Email</th>
+            <th scope="col">DNI</th>
+            <th scope="col">Citas</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr *ngFor="let clien of clientes"><!--Aqui va el ngFor-->
+
+            <td>{{clien.nombre}}</td>
+            <td>{{clien.telefono}}</td>
+            <td>{{clien.email}}</td>
+            <td>{{clien.dni}}</td>
+            <td></td>
+            <td>
+                <span>
+                <i class="bi bi-pencil-square bg bg-warning" routerLink='/clientes/{{clien.id}}'></i>
+                <i (click)="confirmarEliminar(clien)" class="bi bi-trash bg bg-danger"></i>
+              </span>
+              </td>
+        </tr>
+    </tbody>
+
+
+
+
+</table>

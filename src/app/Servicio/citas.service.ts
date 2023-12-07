@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionData, deleteDoc, doc } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc } from '@angular/fire/firestore';
 import { Citas } from '../Modelo/citas';
 import { Observable } from 'rxjs';
 
@@ -23,5 +23,9 @@ export class CitasService {
   eliminarCita(objeto: any, nombreColeccion: string){
     const collectionRef = doc(this.db, nombreColeccion+"/"+objeto.id);
     return deleteDoc(collectionRef);
+  }
+  modificarCitas(objeto: any, nombreColeccion: string, id: string) {
+    const collectionRef = doc(this.db, nombreColeccion+"/"+id);
+    return setDoc(collectionRef, objeto);
   }
 }
