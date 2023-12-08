@@ -1,7 +1,7 @@
 <div class="container mt-4">
     <h2>{{textoTitulo}}</h2>
 
-    <div class="alert alert-success my-3" role="alert" *ngIf="mensaje">
+    <div *ngIf="mensaje" class="alert my-3" [class.alert-success]="esExito" [class.alert-danger]="!esExito">
         {{mensaje}}
     </div>
 
@@ -30,18 +30,30 @@
                     {{fechaAgenda.dia}}</option>
             </select>
         </div>
-         <!--Pedimos la hora.-->
-         <div class="mb-3">
+        <!--Pedimos la hora.-->
+        <div class="mb-3">
             <label for="horaAgenda" class="form-label">Hora:</label>
             <select class="form-select" name="horaAgenda" formControlName="horaAgenda"
                 [(ngModel)]="agendaCitas.horaAgenda">
 
                 <option value="" disabled selected>Seleccione una hora disponible.</option>
                 <option *ngFor="let horaAgenda of fechaCitaHora" [value]="horaAgenda.horaInicio">
-                   {{horaAgenda.nombreEntrevistador}} {{horaAgenda.horaInicio}}</option>
+                    {{horaAgenda.nombreEntrevistador}} {{horaAgenda.horaInicio}}</option>
             </select>
         </div>
 
+
+        <!--Para que salgan las horas disables-->
+        <!--Pedimos la hora.
+<div class="mb-3">
+    <label for="horaAgenda" class="form-label">Hora:</label>
+    <select class="form-select" name="horaAgenda" formControlName="horaAgenda" [(ngModel)]="agendaCitas.horaAgenda">
+        <option value="" disabled selected>Seleccione una hora disponible.</option>
+        <option *ngFor="let horaAgenda of fechaCitaHora" [value]="horaAgenda.horaInicio" [disabled]="esHoraOcupada(horaAgenda.horaInicio)">
+           {{horaAgenda.nombreEntrevistador}} {{horaAgenda.horaInicio}}
+        </option>
+    </select>
+ </div>-->
         <button type="submit" class="btn btn-primary" [disabled]="!this.agenda.valid">{{buttonText}}</button>
     </form>
 </div>

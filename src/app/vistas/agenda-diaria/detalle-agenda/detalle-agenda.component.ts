@@ -15,10 +15,14 @@ import { MensajeService } from 'src/app/Servicio/mensaje.service';
 })
 export class DetalleAgendaComponent {
 
+ 
+  
   textoTitulo: string = 'Añadir Cita Agenda';
   buttonText: string = 'Añadir Cita Agenda';
   mensaje: string = '';
+  mensajeError:string='';
   id:string='';
+  esExito:boolean=true;
   agenda: FormGroup;
   agendaCitas: AgendaCitas = {id:'',nombreCliente: '', fechaAgenda: '', horaAgenda: '' };
   nombreClienteAgenda:AgendaCitas[]=[];
@@ -52,8 +56,8 @@ export class DetalleAgendaComponent {
         this.mensaje = mensaje;
       }
     });
+    
   }
-  
   enviarDatos() {
     if (this.id) {
       this.modificarCitaAgenda();
@@ -68,12 +72,14 @@ export class DetalleAgendaComponent {
         .then((existeCita) => {
           if (existeCita) {
             // Mostrar mensaje de error al usuario
-            this.servicioMensaje.enviarMensaje(
-              'Ya existe una cita con el mismo cliente, fecha y hora.'
-            );
+            this.esExito = false;
+            console.log("Despues de que se repita la fecha"+this.esExito)
+            this.mensaje = 'Ya existe una cita con el mismo cliente, fecha y hora.';
           } else {
             // No existe la cita, proceder a añadir
             this.añadirCita();
+            console.log("despues de añadir la cita"+this.esExito);
+            this.esExito;
           }
         })
         .catch((error) => {
@@ -96,11 +102,13 @@ export class DetalleAgendaComponent {
   añadirCita(){
     console.log(this.agenda.valid);
     if (this.agenda.valid) {
+      
       const nuevaCitaAgenda = this.agenda.value;
       this.servicioAgenda.agregarAgendaCita(nuevaCitaAgenda)
         .then(() => {
           console.log('CitaAgenda agregada correctamente');
           this.agenda.reset();
+          this.esExito = true;
           this.servicioMensaje.enviarMensaje('CitaAgenda añadida correctamente.Redirigiendo a listado de agendaCitas ...');
           //Redirigimos al listado de juegos 2 segundos despues de añadirlo.
           setTimeout(() => {
@@ -113,7 +121,6 @@ export class DetalleAgendaComponent {
         });
     }
   }
-
   filtrarFechasDuplicadas() {
     const fechasUnicas = this.fechaCita.filter(
       (valor, indice, self) =>
@@ -121,7 +128,6 @@ export class DetalleAgendaComponent {
     );
     this.fechaCita = fechasUnicas;
   }
-  // En AgendaCitasService
   verificarCitaExistenteEnFirestore(nombreCliente: string, fechaAgenda: string, horaAgenda: string): Promise<boolean> {
     const citasRef = collection(this.db, 'agendaCitas'); // Reemplaza 'citas' con el nombre de tu colección
     const q = query(citasRef, where('nombreCliente', '==', nombreCliente), where('fechaAgenda', '==', fechaAgenda), where('horaAgenda', '==', horaAgenda));
@@ -130,5 +136,27 @@ export class DetalleAgendaComponent {
       return !querySnapshot.empty;
     });
   }
+  
+  //Para que salgan las horas disable
+  /*esHoraOcupada(hora: string): Promise<boolean> {
+  const citasRef = collection(this.firestore, 'citas'); // Reemplaza 'citas' con el nombre de tu colección
+
+  const q = query(
+    citasRef,
+    where('fechaAgenda', '==', this.agendaCitas.fechaAgenda),
+    where('horaAgenda', '==', hora)
+  );
+
+  return new Promise((resolve, reject) => {
+    getDocs(q)
+      .then((querySnapshot) => {
+        resolve(!querySnapshot.empty);
+      })
+      .catch((error) => {
+        console.error('Error al verificar la existencia de la cita en Firestore:', error);
+        reject(error);
+      });
+  });*/
+  
 
 }
