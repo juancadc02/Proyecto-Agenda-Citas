@@ -1,0 +1,47 @@
+<div class="container mt-4">
+    <h2>{{textoTitulo}}</h2>
+
+    <div class="alert alert-success my-3" role="alert" *ngIf="mensaje">
+        {{mensaje}}
+    </div>
+
+    <form [formGroup]="agenda" (ngSubmit)="enviarDatos()">
+
+
+        <!--Pedimos el nombre del paciente.-->
+        <div class="mb-3">
+            <label for="nombreCliente" class="form-label">Nombre Cliente:</label>
+            <select class="form-select" name="nombreCliente" formControlName="nombreCliente"
+                [(ngModel)]="agendaCitas.nombreCliente">
+
+                <option value="" disabled selected>Seleccione un cliente.</option>
+                <option *ngFor="let nombreAgenda of nombreClientes" [value]="nombreAgenda.nombre">
+                    {{nombreAgenda.nombre}}</option>
+            </select>
+        </div>
+        <!--Pedimos la fecha.-->
+        <div class="mb-3">
+            <label for="fechaAgenda" class="form-label">Fecha:</label>
+            <select class="form-select" name="fechaAgenda" formControlName="fechaAgenda"
+                [(ngModel)]="agendaCitas.fechaAgenda">
+
+                <option value="" disabled selected>Seleccione una fecha disponible.</option>
+                <option *ngFor="let fechaAgenda of fechaCita" [value]="fechaAgenda.dia">
+                    {{fechaAgenda.dia}}</option>
+            </select>
+        </div>
+         <!--Pedimos la hora.-->
+         <div class="mb-3">
+            <label for="horaAgenda" class="form-label">Hora:</label>
+            <select class="form-select" name="horaAgenda" formControlName="horaAgenda"
+                [(ngModel)]="agendaCitas.horaAgenda">
+
+                <option value="" disabled selected>Seleccione una hora disponible.</option>
+                <option *ngFor="let horaAgenda of fechaCitaHora" [value]="horaAgenda.horaInicio">
+                   {{horaAgenda.nombreEntrevistador}} {{horaAgenda.horaInicio}}</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="!this.agenda.valid">{{buttonText}}</button>
+    </form>
+</div>

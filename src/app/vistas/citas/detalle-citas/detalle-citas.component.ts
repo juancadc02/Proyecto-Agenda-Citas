@@ -94,8 +94,6 @@ export class DetalleCitasComponent {
   }
 
   modificarCita() {
-   
-
     this.servicioCitas.modificarCitas(this.cita, 'citas', this.id!).
     then(() => console.log("Se guardo correctamente")).
     catch(() => console.log("No se guardo"));

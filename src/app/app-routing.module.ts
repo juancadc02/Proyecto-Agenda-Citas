@@ -6,6 +6,7 @@ import { CitasComponent } from './vistas/citas/citas.component';
 import { AgendaDiariaComponent } from './vistas/agenda-diaria/agenda-diaria.component';
 import { DetalleCitasComponent } from './vistas/citas/detalle-citas/detalle-citas.component';
 import { DetalleClientesComponent } from './vistas/clientes/detalle-clientes/detalle-clientes.component';
+import { DetalleAgendaComponent } from './vistas/agenda-diaria/detalle-agenda/detalle-agenda.component';
 
 const routes: Routes = [
   {path:'',component:PaginaInicioComponent},
@@ -15,7 +16,11 @@ const routes: Routes = [
   {path:'citas',component:CitasComponent},
   {path:'citas/nuevo',component:DetalleCitasComponent},
   {path:'citas/:id',component:DetalleCitasComponent},
-  {path:'agenda' , component:AgendaDiariaComponent}
+  {path:'agenda' , component:AgendaDiariaComponent},
+  {path:'agenda/nuevo' , component:DetalleAgendaComponent},
+  {path:'agenda/:id' , component:DetalleAgendaComponent}
+
+
 ];
 
 @NgModule({

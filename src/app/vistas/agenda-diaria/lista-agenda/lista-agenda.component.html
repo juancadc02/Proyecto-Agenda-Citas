@@ -1,0 +1,30 @@
+<table class="table">
+
+    <thead>
+        <tr>
+            <th scope="col">Nombre Cliente</th>
+            <th scope="col">Dia</th>
+            <th scope="col">Hora</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr *ngFor="let agenda of listaAgenda"><!--Aqui va el ngFor-->
+            <td>{{agenda.nombreCliente}}</td>
+            <td>{{agenda.fechaAgenda}}</td>
+            <td>{{agenda.horaAgenda}}</td>
+            <td>
+                <span>
+                <i class="bi bi-pencil-square bg bg-warning" routerLink='/agenda/{{agenda.id}}'></i>
+                <i (click)="confirmarEliminar(agenda)" class="bi bi-trash bg bg-danger"></i>
+              </span>
+              </td>
+        </tr>
+    </tbody>
+
+
+
+
+</table>

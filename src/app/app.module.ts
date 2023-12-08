@@ -16,6 +16,8 @@ import { ListaCitasComponent } from './vistas/citas/lista-citas/lista-citas.comp
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DetalleClientesComponent } from './vistas/clientes/detalle-clientes/detalle-clientes.component';
 import { ListaClientesComponent } from './vistas/clientes/lista-clientes/lista-clientes.component';
+import { DetalleAgendaComponent } from './vistas/agenda-diaria/detalle-agenda/detalle-agenda.component';
+import { ListaAgendaComponent } from './vistas/agenda-diaria/lista-agenda/lista-agenda.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { ListaClientesComponent } from './vistas/clientes/lista-clientes/lista-c
     DetalleCitasComponent,
     ListaCitasComponent,
     DetalleClientesComponent,
-    ListaClientesComponent
+    ListaClientesComponent,
+    DetalleAgendaComponent,
+    ListaAgendaComponent
   ],
   imports: [
     BrowserModule,
