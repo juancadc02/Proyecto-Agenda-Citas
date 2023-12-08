@@ -2,7 +2,7 @@ export interface Citas{
    
     id?: string;
     nombreEntrevistador:string,
-    dia: Date;
+    dia: string;
     horaInicio: string;
     horaFin: string,
     presentado?: boolean

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Firestore, collection, getDocs, query, where } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AgendaCitas } from 'src/app/Modelo/agenda-citas';
@@ -28,7 +29,8 @@ export class DetalleAgendaComponent {
   constructor(private fb: FormBuilder,
     private servicioAgenda: AgendaCitasService,
     private servicioMensaje: MensajeService,
-    private router:Router) {
+    private router:Router,
+    private db :Firestore) {
     this.agenda = this.fb.group({
       nombreCliente: ['',Validators.required],
       fechaAgenda:['',Validators.required],
@@ -53,13 +55,32 @@ export class DetalleAgendaComponent {
   }
   
   enviarDatos() {
-    if(this.id){
+    if (this.id) {
       this.modificarCitaAgenda();
-    }else{
-      this.añadirCita();
+    } else {
+      // Verificar si ya existe una cita en Firestore con los mismos datos
+      this
+        .verificarCitaExistenteEnFirestore(
+          this.agendaCitas.nombreCliente,
+          this.agendaCitas.fechaAgenda,
+          this.agendaCitas.horaAgenda
+        )
+        .then((existeCita) => {
+          if (existeCita) {
+            // Mostrar mensaje de error al usuario
+            this.servicioMensaje.enviarMensaje(
+              'Ya existe una cita con el mismo cliente, fecha y hora.'
+            );
+          } else {
+            // No existe la cita, proceder a añadir
+            this.añadirCita();
+          }
+        })
+        .catch((error) => {
+          console.error('Error al verificar la existencia de la cita en Firestore:', error);
+        });
     }
   }
-
   modificarCitaAgenda(){
     this.servicioAgenda.modificarAgendaCita(this.agendaCitas, 'agendaCitas', this.id!).
     then(() => console.log("Se guardo correctamente")).
@@ -100,4 +121,14 @@ export class DetalleAgendaComponent {
     );
     this.fechaCita = fechasUnicas;
   }
+  // En AgendaCitasService
+  verificarCitaExistenteEnFirestore(nombreCliente: string, fechaAgenda: string, horaAgenda: string): Promise<boolean> {
+    const citasRef = collection(this.db, 'agendaCitas'); // Reemplaza 'citas' con el nombre de tu colección
+    const q = query(citasRef, where('nombreCliente', '==', nombreCliente), where('fechaAgenda', '==', fechaAgenda), where('horaAgenda', '==', horaAgenda));
+  
+    return getDocs(q).then((querySnapshot) => {
+      return !querySnapshot.empty;
+    });
+  }
+
 }

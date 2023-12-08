@@ -24,7 +24,7 @@ export class DetalleCitasComponent {
   id: string = "";
   entrevistadores: Entrevistadores = { id: '', nombreEntrevistador: '' };
   entrevistadoresNombre: Entrevistadores[] = [];
-  cita: Citas = { id: '', nombreEntrevistador: '', dia: new Date(), horaInicio: '', horaFin: '', presentado: false };
+  cita: Citas = { id: '', nombreEntrevistador: '', dia: '', horaInicio: '', horaFin: '', presentado: false };
 
 
   constructor(private router: Router,

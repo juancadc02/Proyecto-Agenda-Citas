@@ -7,5 +7,4 @@ export interface Clientes{
     telefono:string;
     email:string;
     dni:string;
-    citas?:Citas[];
 }
