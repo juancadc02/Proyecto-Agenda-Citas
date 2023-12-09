@@ -19,6 +19,17 @@
                     {{nombreAgenda.nombre}}</option>
             </select>
         </div>
+    <!-- Pedimos el nombre del entrevistador. -->
+<div class="mb-3">
+    <label for="nombreEntrevistador" class="form-label">Entrevistador</label>
+    <select class="form-select" name="nombreEntrevistador" formControlName="nombreEntrevistador"
+            [(ngModel)]="agendaCitas.nombreEntrevistador" (change)="actualizarHorasDisponibles()">
+      <option value="" disabled selected>Seleccione un entrevistador.</option>
+      <option *ngFor="let nombreEntrevistador of entrevistadores" [value]="nombreEntrevistador.nombreEntrevistador">
+        {{nombreEntrevistador.nombreEntrevistador}}
+      </option>
+    </select>
+  </div>
         <!--Pedimos la fecha.-->
         <div class="mb-3">
             <label for="fechaAgenda" class="form-label">Fecha:</label>

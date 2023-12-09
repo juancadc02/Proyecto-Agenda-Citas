@@ -14,56 +14,56 @@ import { MensajeService } from 'src/app/Servicio/mensaje.service';
 export class DetalleClientesComponent {
 
   //Variables 
-  textoTitulo:string='Nuevo Cliente';
-  buttonText:string='Añadir Cliente';
-  mensaje:string='';
-  clientesForm:FormGroup;
-  clientes : Clientes={id:'',nombre:'',telefono:'',email:'',dni:''};
-  id:string="";
+  textoTitulo: string = 'Nuevo Cliente';
+  buttonText: string = 'Añadir Cliente';
+  mensaje: string = '';
+  clientesForm: FormGroup;
+  clientes: Clientes = { id: '', nombre: '', telefono: '', email: '', dni: '' };
+  id: string = "";
 
-  constructor( private fb: FormBuilder,
+  constructor(private fb: FormBuilder,
     private servicioClientes: ClientesService,
     private servicioMensaje: MensajeService,
     private route: ActivatedRoute,
     private router: Router,
-    private servicioFirebase: FirebaseService){
+    private servicioFirebase: FirebaseService) {
 
-    this.clientesForm=this.fb.group({
-      nombre:['',Validators.required],
-      telefono:['',Validators.required],
-      email:['',Validators.required],
-      dni:['',Validators.required]
+    this.clientesForm = this.fb.group({
+      nombre: ['', Validators.required],
+      telefono: ['', Validators.required],
+      email: ['', Validators.required],
+      dni: ['', Validators.required]
+    });
+    
+  }
+
+  ngOnInit() {
+    // Comprobamos si estamos añadiendo o modificando.
+    if (this.route.snapshot.paramMap.get("id")) {
+      this.textoTitulo = 'Modificar cliente';
+      this.id = this.route.snapshot.paramMap.get("id")!;
+      this.buttonText = "Modificar cliente";
+      this.servicioFirebase.getFireBasePorId('clientes', this.id).subscribe(
+        (res: Clientes) => this.clientes = res
+      );
+    }
+    this.servicioMensaje.mensaje$.subscribe((mensaje) => {
+      if (mensaje) {
+        this.mensaje = mensaje;
+      }
     });
   }
-
-ngOnInit(){
-   // Comprobamos si estamos añadiendo o modificando.
-   if (this.route.snapshot.paramMap.get("id")) {
-    this.textoTitulo = 'Modificar cliente';
-    this.id = this.route.snapshot.paramMap.get("id")!;
-    this.buttonText = "Modificar cliente";
-    this.servicioFirebase.getFireBasePorId('clientes', this.id).subscribe(
-      (res: Clientes) => this.clientes = res
-    );
-  }
-
-  this.servicioMensaje.mensaje$.subscribe((mensaje) => {
-    if (mensaje) {
-      this.mensaje = mensaje;
-    }
-  });
-}
-  enviarDatos(){
-
-    if(this.id){
+  //Metodo que si recibe algun id de cliente modifica el cliente y si no crea un nuevo cliente
+  enviarDatos() {
+    if (this.id) {
       this.modificarCliente();
-    }else{
+    } else {
       this.agregarCliente();
     }
-
   }
 
-  agregarCliente(){
+  //Metodo que añade un nuevo cliente,muestra mensaje y redirige a la pagina clientes
+  agregarCliente() {
     if (this.clientesForm.valid) {
       const nuevoCliente = this.clientesForm.value;
       this.servicioClientes.añadirCliente(nuevoCliente)
@@ -82,15 +82,16 @@ ngOnInit(){
         });
     }
   }
-  modificarCliente(){
+  //Metodo que modifica el cliente, muestra mensaje de exito y redirige a la pagina cliente.
+  modificarCliente() {
     this.servicioClientes.modificarCliente(this.clientes, 'clientes', this.id!).
-    then(() => console.log("Se guardo correctamente")).
-    catch(() => console.log("No se guardo"));
+      then(() => console.log("Se guardo correctamente")).
+      catch(() => console.log("No se guardo"));
     this.servicioMensaje.enviarMensaje('Cliente modificado correctamente. Redirigiendo a listado de clientes ...');
     //Redirigimos al listado de juegos 2 segundos despues de añadirlo.
     setTimeout(() => {
-     // Redirigir a otro sitio
-     this.router.navigate(['/clientes']);
-   }, 2000)
+      // Redirigir a otro sitio
+      this.router.navigate(['/clientes']);
+    }, 2000)
   }
 }

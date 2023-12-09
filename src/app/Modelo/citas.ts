@@ -1,3 +1,4 @@
+//Modelo de datos de la coleccion Citas
 export interface Citas{
    
     id?: string;

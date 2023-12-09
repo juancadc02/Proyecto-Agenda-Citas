@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AgendaCitas } from 'src/app/Modelo/agenda-citas';
 import { Citas } from 'src/app/Modelo/citas';
 import { Clientes } from 'src/app/Modelo/clientes';
+import { Entrevistadores } from 'src/app/Modelo/entrevistadores';
 import { AgendaCitasService } from 'src/app/Servicio/agenda-citas.service';
 import { MensajeService } from 'src/app/Servicio/mensaje.service';
 
@@ -16,7 +17,7 @@ import { MensajeService } from 'src/app/Servicio/mensaje.service';
 export class DetalleAgendaComponent {
 
  
-  
+  //Variables
   textoTitulo: string = 'Añadir Cita Agenda';
   buttonText: string = 'Añadir Cita Agenda';
   mensaje: string = '';
@@ -24,11 +25,13 @@ export class DetalleAgendaComponent {
   id:string='';
   esExito:boolean=true;
   agenda: FormGroup;
-  agendaCitas: AgendaCitas = {id:'',nombreCliente: '', fechaAgenda: '', horaAgenda: '' };
+  agendaCitas: AgendaCitas = {id:'',nombreEntrevistador:'',nombreCliente: '', fechaAgenda: '', horaAgenda: '' };
   nombreClienteAgenda:AgendaCitas[]=[];
   nombreClientes: Clientes[] = [];
   fechaCita: Citas[] = [];
   fechaCitaHora:Citas[]=[];
+  entrevistadores:Entrevistadores[]=[];
+  horaDisponibleEntrevistador:Citas[]=[];
 
   constructor(private fb: FormBuilder,
     private servicioAgenda: AgendaCitasService,
@@ -38,11 +41,13 @@ export class DetalleAgendaComponent {
     this.agenda = this.fb.group({
       nombreCliente: ['',Validators.required],
       fechaAgenda:['',Validators.required],
-      horaAgenda:['',Validators.required]
+      horaAgenda:['',Validators.required],
+      nombreEntrevistador:['',Validators.required]
      
     });
   }
 
+  //Metodo inicial.
   ngOnInit() {
     this.servicioAgenda.listarClientes().subscribe(res => this.nombreClientes = res);
     this.servicioAgenda.listarCitas().subscribe(res => {
@@ -50,6 +55,7 @@ export class DetalleAgendaComponent {
       this.filtrarFechasDuplicadas();
     });
     this.servicioAgenda.listarCitas().subscribe(res => this.fechaCitaHora = res);
+    this.servicioAgenda.listarEntrevistadores().subscribe(res=>this.entrevistadores=res);
     // Para mostrar el mensaje una vez añadido el alquiler
     this.servicioMensaje.mensaje$.subscribe((mensaje) => {
       if (mensaje) {
@@ -58,6 +64,8 @@ export class DetalleAgendaComponent {
     });
     
   }
+  //Metodo que si recibe un id modifica y si no lo recibe crea nuevo, tambien verifica si existe una cita a la hora y fecha que queremos añadir, si 
+  //existe muestra mensaje de error y si no existe la agrega
   enviarDatos() {
     if (this.id) {
       this.modificarCitaAgenda();
@@ -87,6 +95,7 @@ export class DetalleAgendaComponent {
         });
     }
   }
+  //Metodo para modificar citaAgenda
   modificarCitaAgenda(){
     this.servicioAgenda.modificarAgendaCita(this.agendaCitas, 'agendaCitas', this.id!).
     then(() => console.log("Se guardo correctamente")).
@@ -99,6 +108,7 @@ export class DetalleAgendaComponent {
    }, 2000)
   }
 
+  //Metodo para añadir citaAgenda
   añadirCita(){
     console.log(this.agenda.valid);
     if (this.agenda.valid) {
@@ -121,6 +131,7 @@ export class DetalleAgendaComponent {
         });
     }
   }
+  //Metodo que filtra las fecha duplicadas para cuando en un dia hay varias horas disponible no muestre todas las fechas
   filtrarFechasDuplicadas() {
     const fechasUnicas = this.fechaCita.filter(
       (valor, indice, self) =>
@@ -128,6 +139,7 @@ export class DetalleAgendaComponent {
     );
     this.fechaCita = fechasUnicas;
   }
+  //Verifica si la hora y fecha estan ocupada
   verificarCitaExistenteEnFirestore(nombreCliente: string, fechaAgenda: string, horaAgenda: string): Promise<boolean> {
     const citasRef = collection(this.db, 'agendaCitas'); // Reemplaza 'citas' con el nombre de tu colección
     const q = query(citasRef, where('nombreCliente', '==', nombreCliente), where('fechaAgenda', '==', fechaAgenda), where('horaAgenda', '==', horaAgenda));
@@ -135,6 +147,15 @@ export class DetalleAgendaComponent {
     return getDocs(q).then((querySnapshot) => {
       return !querySnapshot.empty;
     });
+  }
+  //Muestra solo las horas disponibles para el entrevistador elegido
+  actualizarHorasDisponibles() {
+    const entrevistadorSeleccionado = this.agenda.controls['nombreEntrevistador'].value;
+
+    // Filtrar las horas disponibles según el entrevistador seleccionado
+    this.fechaCitaHora = this.fechaCitaHora.filter(
+      (horaAgenda) => horaAgenda.nombreEntrevistador === entrevistadorSeleccionado
+    );
   }
   
   //Para que salgan las horas disable

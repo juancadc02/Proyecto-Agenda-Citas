@@ -1,5 +1,5 @@
 import { Citas } from "./citas";
-
+//Modelo de datos de la coleccion clientes
 export interface Clientes{
   
     id?:string;
@@ -7,4 +7,5 @@ export interface Clientes{
     telefono:string;
     email:string;
     dni:string;
+    citas?:Citas[];
 }

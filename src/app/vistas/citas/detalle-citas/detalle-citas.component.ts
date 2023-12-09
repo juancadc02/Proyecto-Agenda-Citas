@@ -50,7 +50,7 @@ export class DetalleCitasComponent {
   ngOnInit() {
 
     if (this.route.snapshot.paramMap.get("id")) {
-      this.textoTitulo='Modificar cita';
+      this.textoTitulo = 'Modificar cita';
       this.id = this.route.snapshot.paramMap.get("id")!;
       this.buttonText = "Modificar cita";
       this.servicioFirebase.getFireBasePorId('citas', this.id).subscribe(
@@ -65,6 +65,7 @@ export class DetalleCitasComponent {
     });
   }
 
+    //Metodo que si recibe algun id de citas modifica la cita y si no crea una nueva cita
   enviarDatos() {
     if (this.id) {
       this.modificarCita()
@@ -72,6 +73,7 @@ export class DetalleCitasComponent {
       this.agregarCita();
     }
   }
+    //Metodo que añade una cita,muestra mensaje y redirige a la pagina citas
   agregarCita() {
     console.log(this.citaForm.valid);
     if (this.citaForm.valid) {
@@ -93,16 +95,17 @@ export class DetalleCitasComponent {
     }
   }
 
+  //Metodo que modifica una cita,muestra mensaje y redirige a la pagina citas
   modificarCita() {
     this.servicioCitas.modificarCitas(this.cita, 'citas', this.id!).
-    then(() => console.log("Se guardo correctamente")).
-    catch(() => console.log("No se guardo"));
+      then(() => console.log("Se guardo correctamente")).
+      catch(() => console.log("No se guardo"));
     this.servicioMensaje.enviarMensaje('Cita modificada correctamente. Redirigiendo a listado de citas ...');
     //Redirigimos al listado de juegos 2 segundos despues de añadirlo.
     setTimeout(() => {
-     // Redirigir a otro sitio
-     this.router.navigate(['/citas']);
-   }, 2000)
+      // Redirigir a otro sitio
+      this.router.navigate(['/citas']);
+    }, 2000)
   }
-  }
+}
 
